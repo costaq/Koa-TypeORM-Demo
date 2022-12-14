@@ -1,11 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from "typeorm"
 import { Base } from "./base";
+import { User } from "./user";
 
 @Entity()
 export class UserInfo extends Base {
 
     @PrimaryGeneratedColumn("uuid")
-    id: number;
+    id: string;
 
     @Column()
     name: string;

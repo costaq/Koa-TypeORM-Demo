@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, OneToMany } from "typeorm"
+import { Address } from "./userAddress";
 import { Base } from "./base";
 import { UserInfo } from "./userInfo";
 
@@ -6,7 +7,7 @@ import { UserInfo } from "./userInfo";
 export class User extends Base {
 
     @PrimaryGeneratedColumn("uuid")
-    id: number;
+    id: string;
 
     @Column()
     userName: string;
@@ -26,6 +27,9 @@ export class User extends Base {
     })
     @JoinColumn()
     info: UserInfo;
+
+    @OneToMany(() => Address, address => address.user)
+    addresses: Address[];
 
     constructor(userName: string, displayName: string, password: string, name: string, birthDate: Date) {
         super();

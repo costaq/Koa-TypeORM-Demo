@@ -3,11 +3,12 @@ import { body, path, query, request, responsesAll, summary, tagsAll } from "koa-
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { User, createUserSchema, editUserSchema } from "../entity/user";
-import { CreateUserReq, ExtendedContext, UpdateUserInfoReq, UpdateUserReq } from "../core/response";
+import { CreateUserAddressReq, CreateUserReq, ExtendedContext, UpdateUserInfoReq, UpdateUserReq } from "../core/response";
 import response from "../utils/response";
 import HttpException from "../utils/httpException";
 import { ErrorCode } from "../core/enum";
 import { editUserInfoSchema, UserInfo } from "../entity/userInfo";
+import { Address, editUserAddressSchema } from "../entity/userAddress";
 
 @responsesAll({ 200: { description: "success" }, 400: { description: "bad request" } })
 @tagsAll(["User"])
@@ -20,7 +21,7 @@ export default class UserController {
     public static async getUser(ctx: Context): Promise<void> {
         const id = ctx.params.id;
         const userRepository: Repository<User> = AppDataSource.getRepository(User);
-        const user = await userRepository.findOne({ where: { id }, relations: ["info"] });
+        const user = await userRepository.findOne({ where: { id }, relations: ["info", "addresses"] });
         response(ctx, {
             data: user
         });
@@ -126,5 +127,18 @@ export default class UserController {
         else {
             throw new HttpException(ErrorCode.USER_NOT_FOUND);
         }
+    }
+
+    @request("post", "/userAddress/add")
+    @summary("添加用户地址")
+    @body(editUserAddressSchema)
+    public static async createUserAddress(ctx: ExtendedContext<CreateUserAddressReq>): Promise<void> {
+        const { province, city, district, street, address, userId } = ctx.request.body;
+        const userAddressRepository: Repository<Address> = AppDataSource.getRepository(Address);
+        const userRepository: Repository<User> = AppDataSource.getRepository(User);
+        const user = await userRepository.findOne({ where: { id: userId } });
+        const addressToBeSaved = new Address(user, province, city, district, street, address);
+        await userAddressRepository.save(addressToBeSaved);
+        response(ctx);
     }
 }

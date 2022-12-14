@@ -33,3 +33,15 @@ export type UpdateUserInfoReq = {
     name: string;
     birthDate: Date;
 }
+
+/**
+ * @description 创建用户地址
+ */
+export type CreateUserAddressReq = {
+    province?: string;
+    city?: string;
+    district?: string;
+    street?: string;
+    address?: string;
+    userId: string;
+}
