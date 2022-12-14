@@ -29,6 +29,8 @@
       "start": "nodemon -e ts --exec ts-node src/index.ts",
       "typeorm": "typeorm-ts-node-commonjs",
       "build": "tsc --build",
-      "pm2-start": "pm2 start dist/app.js --name typeorm-demo"
+      "pm2-start": "pm2 start dist/app.js --name typeorm-demo",
+      "migration:generate": "npx typeorm-ts-node-esm migration:generate ./src/migration/update-table -d ./src/data-source.ts",
+      "migration:run": "npx typeorm-ts-node-esm migration:run -d ./src/data-source.ts"
    }
 }
